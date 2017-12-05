@@ -7,6 +7,7 @@
 require('dotenv').config();
 var request = require('request');
 var fs = require('fs');
+var mkdirp = require('mkdirp');
 
 // Main function:
 // Takes the repoOwner as string
@@ -63,9 +64,7 @@ var repoName = process.argv[3];
     return process.exit(1);
   }else if(!process.env.GITHUB_TOKEN){
     console.log("Please ensure you have set up your Github token in your .env file");
-  }
-
-console.log(process.env);
+}
 
 getRepoContributors(repoOwner, repoName, function(err, contributors){
 
@@ -88,6 +87,11 @@ getRepoContributors(repoOwner, repoName, function(err, contributors){
   // For each item within the body download the image
 
   contributors.forEach(function(contributor){
+    mkdirp('./avatars', function(err){
+      if(err){
+        console.error(err);
+      }
+    });
     downloadImageByURL(contributor.avatar_url, "./avatars/" + contributor.login + ".jpg");
   });
 
