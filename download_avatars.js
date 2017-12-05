@@ -35,6 +35,9 @@ function getRepoContributors(repoOwner, repoName, cb){
     if(body.message === 'Not Found'){
       console.log("Incorrect repoOwner or repoName");
       return false;
+    }else if(body.message === "Bad credentials"){
+      console.log("Please check your GitHub token credentials and try again.");
+      return false;
     }
     cb(err, body);
 
@@ -47,13 +50,22 @@ function getRepoContributors(repoOwner, repoName, cb){
 var repoOwner = process.argv[2];
 var repoName = process.argv[3];
 
-  // If repoOwner OR repoName are blank (i.e. undefined)
+  // First condition checks for if repoOwner OR repoName are blank (i.e. undefined)
   // Then output an error message asking for a RepoOwner and RepoName.
+  // Second condition checks if they have given more than 2 inputs.
+  // Third condition checks for the .env file to ensure it has been configured correctly.
 
   if(!repoOwner || !repoName){
     console.log("Please input a RepoOwner and RepoName");
     return process.exit(1);
+  }else if(process.argv.slice(2).length > 2){
+    console.log("Please check your number of inputs and try again");
+    return process.exit(1);
+  }else if(!process.env.GITHUB_TOKEN){
+    console.log("Please ensure you have set up your Github token in your .env file");
   }
+
+console.log(process.env);
 
 getRepoContributors(repoOwner, repoName, function(err, contributors){
 
