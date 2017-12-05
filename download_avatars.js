@@ -14,10 +14,18 @@ function getRepoContributors(repoOwner, repoName, cb){
 
   request(options, function(err, response, body){
     cb(err, body);
+    console.log('Downloads Finished!');
   })
 };
 
-getRepoContributors("jquery", "jquery", function(err, body){
+var repoOwner = process.argv[2];
+var repoName = process.argv[3];
+
+getRepoContributors(repoOwner, repoName, function(err, body){
+  if(!repoOwner || !repoName){
+    console.log("Please input a RepoOwner and RepoName");
+    return false;
+  }
   if(err){
     console.log("Errors: ", err);
     return false;
@@ -29,14 +37,13 @@ getRepoContributors("jquery", "jquery", function(err, body){
 })
 
 function downloadImageByURL(URL, filePath){
+
   // Take URL
   // Make a 'get' request
-  // Save file to a file path location
   request.get(URL)
          .on('error', function(err){
           console.log(err);
          })
+  // Save file to a file path location
          .pipe(fs.createWriteStream(filePath));
 };
-
-downloadImageByURL("https://avatars1.githubusercontent.com/u/43004?v=4", "./avatars/test.png")
