@@ -32,6 +32,10 @@ function getRepoContributors(repoOwner, repoName, cb){
 // Request is made here to GitHub
 
   request(options, function(err, response, body){
+    if(body.message === 'Not Found'){
+      console.log("Incorrect repoOwner or repoName");
+      return false;
+    }
     cb(err, body);
 
 // Notification to user that the program has finished running. If adjusting this program for additional
@@ -53,6 +57,7 @@ var repoName = process.argv[3];
 
 getRepoContributors(repoOwner, repoName, function(err, contributors){
 
+
   // If receiving an error from the request, console.log the error.
 
   if(err){
@@ -65,6 +70,8 @@ getRepoContributors(repoOwner, repoName, function(err, contributors){
   if(!Array.isArray(contributors)){
     return false;
   };
+
+
 
   // For each item within the body download the image
 
